@@ -108,7 +108,8 @@
   .claim {
     font-family: 'Jost', sans-serif; font-weight: 400; letter-spacing: 0.13em; text-transform: uppercase;
     font-size: 0.64rem; color: var(--gold); text-decoration: none; cursor: pointer;
-    border-bottom: 1px solid transparent; transition: border-color 0.2s, color 0.2s; background: none;
+    background: none; border: none; padding: 0; margin: 0; appearance: none; -webkit-appearance: none;
+    border-bottom: 1px solid transparent; transition: border-color 0.2s, color 0.2s;
   }
   .claim:hover { border-color: var(--gold); color: var(--gold-soft); }
 
@@ -300,11 +301,13 @@
       ? `<span class="price">${escHtml(it.price)}${it.qty ? `<span class="qty">${escHtml(it.qty)}</span>` : ""}</span>`
       : `<span class="price" style="font-size:1.0rem;color:var(--text-dim)">Ask us</span>`;
     const view = (it.buy && !claimed) ? `<a class="view" ${href}>View ↗</a>` : "";
-    const claimLink = claimed ? "" :
-      `<a class="claim" data-key="${escAttr(it.key)}" href="mailto:${CLAIM_EMAIL}?subject=${encodeURIComponent("Registry — " + it.name)}">I’ll get this →</a>`;
+    // Live mode → a real button (no mailto). Static mode → mailto fallback so guests can still reach you.
+    const claimEl = claimed ? "" : (liveEnabled()
+      ? `<button type="button" class="claim" data-key="${escAttr(it.key)}">I’ll get this →</button>`
+      : `<a class="claim" data-key="${escAttr(it.key)}" href="mailto:${CLAIM_EMAIL}?subject=${encodeURIComponent("Registry — " + it.name)}">I’ll get this →</a>`);
     return `${photo}<div class="body">${title}<span class="vendor">${escHtml(it.vendor)}</span>` +
            `<div class="spacer"></div><div class="pricerow">${priceBlock}${view}</div>` +
-           `<div class="card-foot"><span class="badge">${claimed ? "Claimed" : "Available"}</span>${claimLink}</div></div>`;
+           `<div class="card-foot"><span class="badge">${claimed ? "Claimed" : "Available"}</span>${claimEl}</div></div>`;
   }
 
   function render() {
