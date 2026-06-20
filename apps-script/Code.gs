@@ -14,7 +14,7 @@
  */
 
 // Email notified whenever a gift is claimed. Set to "" to disable. Comma-separate for several.
-var NOTIFY_EMAIL = "skpedapudi@gmail.com";
+var NOTIFY_EMAIL = "skpedapudi@gmail.com,gretllam@gmail.com";
 
 /** GET → returns { "<gift name>": { claimed: bool, status: "..." }, ... } */
 function doGet(e) {
