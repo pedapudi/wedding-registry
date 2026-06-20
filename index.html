@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gretl &amp; Sunil — Registry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:        #0b3a47;
+    --bg-soft:   #0e424f;
+    --cream:     #f4efe8;
+    --gold:      #c99a78;
+    --gold-soft: #d9b696;
+    --gold-line: rgba(201, 154, 120, 0.38);
+    --gold-dim:  rgba(201, 154, 120, 0.18);
+    --text:      #c4d0d1;
+    --text-dim:  #8ba0a3;
+    --shadow:    rgba(0, 0, 0, 0.28);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Quicksand', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    text-align: center;
+    padding: 90px 24px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .names {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    color: var(--gold-soft);
+    letter-spacing: 0.18em;
+  }
+  .names .line { font-size: clamp(2.8rem, 11vw, 6.2rem); line-height: 1.05; }
+  .amp-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 22px; margin: 18px auto; max-width: 520px;
+  }
+  .amp-row .rule { flex: 1; height: 1px; background: var(--gold-line); }
+  .amp-row .amp { font-family: 'Jost', sans-serif; font-weight: 300; font-size: 1.9rem; color: var(--gold); }
+
+  .eyebrow {
+    font-family: 'Jost', sans-serif; font-weight: 300;
+    letter-spacing: 0.55em; text-transform: uppercase;
+    font-size: clamp(1.1rem, 3.5vw, 1.6rem); color: var(--gold);
+    margin: 30px 0 0; padding-left: 0.55em;
+  }
+  .intro { color: var(--text); font-size: 1.05rem; max-width: 620px; margin: 26px auto 0; }
+  .center-rule { width: 130px; height: 1px; background: var(--gold-line); margin: 38px auto 0; }
+  .progress {
+    text-align: center; font-family: 'Jost', sans-serif; font-weight: 300;
+    letter-spacing: 0.22em; text-transform: uppercase; font-size: 0.8rem;
+    color: var(--text-dim); margin: 28px 0 0;
+  }
+
+  /* ---------- Sections ---------- */
+  main { max-width: 1180px; margin: 0 auto; padding: 30px 24px 110px; }
+  .category { margin-top: 64px; }
+  .category-head { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
+  .category-head .cat-title { display: flex; flex-direction: column; gap: 5px; }
+  .category-head h2 {
+    font-family: 'Jost', sans-serif; font-weight: 300;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    font-size: clamp(1rem, 2.4vw, 1.35rem); color: var(--gold-soft);
+    margin: 0; white-space: nowrap;
+  }
+  .category-head .cat-sub {
+    font-family: 'Quicksand', sans-serif; font-weight: 400; font-style: italic;
+    font-size: 0.82rem; letter-spacing: 0.02em; color: var(--text-dim);
+  }
+  .category-head .rule { flex: 1; height: 1px; background: var(--gold-dim); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+
+  /* ---------- Cards ---------- */
+  .card {
+    position: relative; background: var(--bg-soft);
+    border: 1px solid var(--gold-dim); border-radius: 3px;
+    overflow: hidden; display: flex; flex-direction: column;
+    transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .card:hover { border-color: var(--gold-line); transform: translateY(-4px); box-shadow: 0 16px 34px var(--shadow); }
+
+  .photo {
+    display: block; height: 188px; background: var(--cream);
+    border-bottom: 1px solid var(--gold-line); overflow: hidden; position: relative;
+  }
+  .photo img { width: 100%; height: 100%; object-fit: contain; padding: 16px; transition: transform 0.4s ease; }
+  a.photo:hover img { transform: scale(1.05); }
+  a.photo::after {
+    content: "↗"; position: absolute; top: 10px; right: 12px;
+    font-family: 'Jost', sans-serif; font-size: 0.95rem; color: var(--bg);
+    background: rgba(244,239,232,0.85); border-radius: 50%;
+    width: 26px; height: 26px; display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.25s ease;
+  }
+  a.photo:hover::after { opacity: 1; }
+
+  .body { padding: 18px 20px 18px; display: flex; flex-direction: column; flex: 1; }
+
+  .name { font-family: 'Jost', sans-serif; font-weight: 400; font-size: 1.14rem; letter-spacing: 0.02em; color: #eaf1f1; margin: 0 0 4px; text-decoration: none; display: block; }
+  a.name:hover { color: var(--gold-soft); }
+  .vendor { font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-dim); }
+
+  .spacer { flex: 1; min-height: 14px; }
+
+  .pricerow { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .price { font-family: 'Jost', sans-serif; font-weight: 400; font-size: 1.4rem; color: var(--gold-soft); letter-spacing: 0.02em; }
+  .price .qty { font-family: 'Quicksand', sans-serif; font-size: 0.78rem; color: var(--text-dim); letter-spacing: 0.04em; margin-left: 5px; }
+  .view {
+    font-family: 'Jost', sans-serif; font-weight: 400; letter-spacing: 0.1em;
+    text-transform: uppercase; font-size: 0.68rem; color: var(--gold);
+    text-decoration: none; white-space: nowrap; border-bottom: 1px solid transparent; transition: border-color 0.2s, color 0.2s;
+  }
+  .view:hover { color: var(--gold-soft); border-color: var(--gold-soft); }
+
+  .card-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; }
+  .badge {
+    font-family: 'Jost', sans-serif; font-weight: 400; letter-spacing: 0.18em;
+    text-transform: uppercase; font-size: 0.64rem; padding: 6px 13px;
+    border: 1px solid var(--gold-line); border-radius: 999px; color: var(--gold-soft);
+  }
+  .claim {
+    font-family: 'Jost', sans-serif; font-weight: 400; letter-spacing: 0.13em;
+    text-transform: uppercase; font-size: 0.64rem; color: var(--gold);
+    text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s, color 0.2s;
+  }
+  .claim:hover { border-color: var(--gold); color: var(--gold-soft); }
+
+  /* Claimed state */
+  .card.claimed { opacity: 0.5; }
+  .card.claimed .name { text-decoration: line-through; color: var(--text-dim); }
+  .card.claimed .price { color: var(--text-dim); }
+  .card.claimed .badge { color: var(--text-dim); border-color: rgba(139,160,163,0.4); }
+
+  /* ---------- Footer ---------- */
+  footer { text-align: center; padding: 0 24px 90px; }
+  footer .center-rule { margin: 0 auto 30px; }
+  footer p { color: var(--text-dim); font-size: 0.92rem; max-width: 560px; margin: 0 auto 26px; }
+  .btn {
+    display: inline-block; font-family: 'Jost', sans-serif; font-weight: 300;
+    letter-spacing: 0.28em; text-transform: uppercase; font-size: 0.95rem;
+    color: var(--gold-soft); text-decoration: none; padding: 16px 42px; padding-right: calc(42px - 0.28em);
+    border: 1px solid var(--gold-line); border-radius: 2px; transition: background 0.25s, color 0.25s;
+  }
+  .btn:hover { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+
+  @media (max-width: 540px) { .hero { padding-top: 64px; } main { padding-bottom: 70px; } }
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="names">
+      <div class="line">GRETL</div>
+      <div class="amp-row"><span class="rule"></span><span class="amp">&amp;</span><span class="rule"></span></div>
+      <div class="line">SUNIL</div>
+    </div>
+    <p class="eyebrow">Registry</p>
+    <p class="intro">
+      A few things we’d love for our life together. Pick whatever speaks to you.
+    </p>
+    <div class="center-rule"></div>
+    <p class="progress" id="progress"></p>
+  </header>
+
+  <main id="catalog"></main>
+
+  <footer>
+    <div class="center-rule"></div>
+    <p>
+      Tap a gift to see it at the shop. When you claim one, send us a note and we’ll mark it
+      off the list so nothing arrives in twos. Thank you for celebrating with us.
+    </p>
+    <a class="btn" href="mailto:skpedapudi@gmail.com?subject=Wedding%20Registry">Claim a Gift</a>
+  </footer>
+
+<script>
+  // ---- Registry data (mirrors the spreadsheet; img + buy URL pulled from the sheet) ----
+  // status: "available" | "claimed"
+  const CLAIM_EMAIL = "skpedapudi@gmail.com";
+  const ITEMS = [
+    { name: "Placemats — Charcoal", vendor: "Graf Lanz", price: "$45", qty: "each", cat: "Table & Linens", img: "registry-assets/gift-01.webp", buy: "https://graflantz.com/collections/placemats/products/felt-placemat-charcoal?variant=39663534637165" },
+    { name: "Placemats — Granite", vendor: "Graf Lanz", price: "$45", qty: "each", cat: "Table & Linens", img: "registry-assets/gift-02.webp", buy: "https://graflantz.com/collections/placemats/products/felt-placemat-granite?variant=39665704403053" },
+    { name: "Napkins — Terracotta", vendor: "Quince", price: "$70", qty: "set of 12", cat: "Table & Linens", img: "registry-assets/gift-03.webp", buy: "https://www.quince.com/home/organic-airy-gauze-napkins-set-of-12?color=terracotta&size=one-size" },
+
+    { name: "Nashi", vendor: "Studio Arhoj", price: "$55", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-04.webp", buy: "https://arhoj.com/collections/figurines/products/crystal-blob-pear-nashi" },
+    { name: "Pacha", vendor: "Studio Arhoj", price: "$55", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-05.webp", buy: "https://arhoj.com/collections/figurines/products/crystal-blob-pacha" },
+    { name: "Crystal Blob Group 1120", vendor: "Studio Arhoj", price: "$110", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-06.webp", buy: "https://arhoj.com/collections/figurines/products/crystal-blob-group-1120" },
+    { name: "’Lil Richard", vendor: "Studio Arhoj", price: "$55", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-07.webp", buy: "https://arhoj.com/collections/figurines/products/crystal-blob-eggplant" },
+    { name: "Yoshi Snow Leaf", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-08.webp", buy: "https://arhoj.com/collections/figurines/products/familia-yoshi-snow-leaf" },
+    { name: "Osu Saint Jacques", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-09.webp", buy: "https://arhoj.com/collections/figurines/products/familia-25" },
+    { name: "Yoko Aqualung", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-10.webp", buy: "https://arhoj.com/collections/familia/products/familia-yoko-aqualung" },
+    { name: "Bobo Matte Aquamarine", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-11.webp", buy: "https://arhoj.com/collections/familia/products/familia-3" },
+    { name: "Buto Touch of Heaven", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-12.webp", buy: "https://arhoj.com/collections/figurines/products/familia-buto-touch-of-heaven" },
+    { name: "Kayo Astro Zinger", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-13.webp", buy: "https://arhoj.com/collections/figurines/products/familia-astro-zinger" },
+    { name: "Sponged Pourpour", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-14.webp", buy: "https://arhoj.com/collections/figurines/products/familia-fuji-sponged-pourpour" },
+    { name: "Fuji Rosy Cheeks", vendor: "Studio Arhoj", price: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-15.webp", buy: "https://arhoj.com/collections/familia/products/familia-fuji-rosy-cheeks" },
+    { name: "Bobo Cream Cerise", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-16.webp", buy: "https://arhoj.com/collections/figurines/products/familia-bobo-cream-cerise" },
+    { name: "Osu Mashed Strawberries", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-17.webp", buy: "https://arhoj.com/collections/familia/products/familia-fuji-mashed-strawberries" },
+    { name: "Niji Dolphin", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-18.webp", buy: "https://arhoj.com/collections/familia/products/familia-niji-dolphin" },
+    { name: "Dot Blue Sea", vendor: "Studio Arhoj", price: "$36", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-19.webp", buy: "https://arhoj.com/collections/familia/products/familia-dot-light-blue" },
+    { name: "Niagara Falls", vendor: "Studio Arhoj", price: "$36", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-20.webp", buy: "https://arhoj.com/collections/figurines/products/familia-dot-niagara-falls" },
+    { name: "Dot Classic White", vendor: "Studio Arhoj", price: "$36", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-21.webp", buy: "https://arhoj.com/collections/familia/products/familia-dot-white" },
+    { name: "Dot Vanilla Bean", vendor: "Studio Arhoj", price: "$36", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-22.webp", buy: "https://arhoj.com/collections/familia/products/familia-1" },
+    { name: "Sabu Rigoletto", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-23.webp", buy: "https://arhoj.com/collections/familia/products/familia-15" },
+    { name: "Yoshi Sunbeam", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-24.webp", buy: "https://arhoj.com/collections/familia/products/familia-11" },
+
+    { name: "Mooncakes and Milk Bread", vendor: "Cookbook", price: "$20", cat: "The Kitchen", img: "registry-assets/gift-25.webp", buy: "https://www.amazon.com/wedding/guest-view/AJZWNWORQSGQ" },
+    { name: "Every Grain of Rice", vendor: "Cookbook", price: "$20", cat: "The Kitchen", img: "registry-assets/gift-26.webp", buy: "https://www.amazon.com/wedding/guest-view/AJZWNWORQSGQ" },
+    { name: "8×8″ Baking Pan", vendor: "Nordic Ware", price: "$16", qty: "per pan", cat: "The Kitchen", img: "registry-assets/gift-27.webp", buy: "" },
+    { name: "6.5″ Tart Pan", vendor: "Fat Daddio’s", price: "$12", qty: "per pan", cat: "The Kitchen", img: "registry-assets/gift-28.webp", buy: "" },
+
+    { name: "Grigri — Orange", vendor: "Petzl", price: "$133", cat: "The Outdoors", img: "registry-assets/gift-29.webp", buy: "" },
+
+    { name: "Kimwipes", vendor: "Workshop", price: "$16", qty: "per box", cat: "For Sunil’s Projects", img: "registry-assets/gift-30.webp", buy: "" },
+    { name: "Foam Tip Cleaners", vendor: "Workshop", price: "$14", cat: "For Sunil’s Projects", img: "registry-assets/gift-31.webp", buy: "" },
+    { name: "Curved Tip Tweezers", vendor: "Workshop", price: "$42", cat: "For Sunil’s Projects", img: "registry-assets/gift-32.webp", buy: "" },
+    { name: "Precision Tweezers", vendor: "Workshop", price: "$59", cat: "For Sunil’s Projects", img: "registry-assets/gift-33.webp", buy: "" },
+    { name: "ESP32 Microcontrollers", vendor: "Workshop", price: "$23", cat: "For Sunil’s Projects", img: "registry-assets/gift-34.webp", buy: "" },
+  ];
+
+  const CATEGORY_ORDER = [
+    "Table & Linens", "Studio Arhoj Ceramics", "The Kitchen", "The Outdoors", "For Sunil’s Projects",
+  ];
+
+  const CATEGORY_SUBTITLES = {
+    "For Sunil’s Projects": "(which sometimes Gretl gets dragged into)",
+  };
+
+  const escAttr = s => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+  const escHtml = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  const catalog = document.getElementById("catalog");
+  const groups = {};
+  ITEMS.forEach(it => (groups[it.cat] ||= []).push(it));
+
+  CATEGORY_ORDER.filter(c => groups[c]).forEach(cat => {
+    const section = document.createElement("section");
+    section.className = "category";
+    const sub = CATEGORY_SUBTITLES[cat];
+    const head = document.createElement("div");
+    head.className = "category-head";
+    head.innerHTML = `<div class="cat-title"><h2>${escHtml(cat)}</h2>${sub ? `<span class="cat-sub">${escHtml(sub)}</span>` : ""}</div><span class="rule"></span>`;
+    section.appendChild(head);
+
+    const grid = document.createElement("div");
+    grid.className = "grid";
+
+    groups[cat].forEach(it => {
+      const claimed = it.status === "claimed";
+      const href = it.buy ? `href="${escAttr(it.buy)}" target="_blank" rel="noopener"` : "";
+
+      const photo = it.buy
+        ? `<a class="photo" ${href}><img src="${escAttr(it.img)}" alt="${escAttr(it.name)}" loading="lazy"></a>`
+        : `<div class="photo"><img src="${escAttr(it.img)}" alt="${escAttr(it.name)}" loading="lazy"></div>`;
+
+      const title = it.buy
+        ? `<a class="name" ${href}>${escHtml(it.name)}</a>`
+        : `<span class="name">${escHtml(it.name)}</span>`;
+
+      const priceBlock = it.price
+        ? `<span class="price">${escHtml(it.price)}${it.qty ? `<span class="qty">${escHtml(it.qty)}</span>` : ""}</span>`
+        : `<span class="price" style="font-size:1.0rem;color:var(--text-dim)">Ask us</span>`;
+
+      const view = (it.buy && !claimed) ? `<a class="view" ${href}>View ↗</a>` : "";
+      const claimLink = claimed ? "" :
+        `<a class="claim" href="mailto:${CLAIM_EMAIL}?subject=${encodeURIComponent("Registry — " + it.name)}">I’ll get this →</a>`;
+
+      const card = document.createElement("div");
+      card.className = "card" + (claimed ? " claimed" : "");
+      card.innerHTML = `
+        ${photo}
+        <div class="body">
+          ${title}
+          <span class="vendor">${escHtml(it.vendor)}</span>
+          <div class="spacer"></div>
+          <div class="pricerow">${priceBlock}${view}</div>
+          <div class="card-foot"><span class="badge">${claimed ? "Claimed" : "Available"}</span>${claimLink}</div>
+        </div>`;
+      grid.appendChild(card);
+    });
+    section.appendChild(grid);
+    catalog.appendChild(section);
+  });
+
+  const total = ITEMS.length;
+  const available = ITEMS.filter(i => i.status !== "claimed").length;
+  document.getElementById("progress").textContent = `${available} of ${total} gifts still available`;
+</script>
+</body>
+</html>
