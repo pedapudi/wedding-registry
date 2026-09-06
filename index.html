@@ -149,6 +149,8 @@
     color: #eaf1f1; font-family: 'Quicksand', sans-serif; font-size: 1rem; padding: 11px 13px; outline: none;
   }
   .modal input:focus { border-color: var(--gold-line); }
+  .modal input + label { margin-top: 18px; }
+  .modal .mg-error { font-size: 0.8rem; color: var(--gold-soft); text-align: left; margin: 10px 0 0; }
   .modal .actions { display: flex; gap: 12px; margin-top: 22px; }
   .modal button {
     flex: 1; font-family: 'Jost', sans-serif; font-weight: 300; letter-spacing: 0.18em; text-transform: uppercase;
@@ -211,63 +213,58 @@
   // Leave "" to run as a static page (the claim button opens an email instead).
   const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwr9suovdKuYdoBMelTNCHxJkoo_N5YVLBpqs-mWASjyKK1gX-4AoSzLddZ3z6HC17-PA/exec";
 
-  // Exact gift names as they appear in column A of the Sheet — the key that links
-  // each card to its Sheet row. Must stay in the same order as ITEMS below.
-  const SHEET_NAMES = [
-    "Graf Lanz placemats - charcoal", "Graf Lanz placemats - granite", "Quince napkins - terracota x12",
-    "Studio Arhoj - Nashi", "Studio Arhoj - Pacha", "Studio Arhoj - Crystal Blob Group 1120",
-    "Studio Arhoj - 'Lil Richard", "Studio Arhoj - Yoshi Snow Leaf", "Studio Arhoj - Osu Saint Jacques",
-    "Studio Arhoj - Yoko Aqualung", "Studio Arhoj - Bobo Matte Aquamarine", "Studio Arhoj - Buto Touch of Heaven",
-    "Studio Arhoj - Kayo Astro Zinger", "Studio Arhoj - Sponged Pourpour", "Studio Arhoj - Fuji Rosy Cheeks",
-    "Studio Arhoj - Bobo Cream Cerise", "Studio Arhoj - Osu Mashed Strawberries", "Studio Arhoj - Niji Dolphin",
-    "Studio Arhoj - Dot Blue Sea", "Studio Arhoj - Niagara Falls", "Studio Arhoj - Dot Classic White",
-    "Studio Arhoj - Dot Vanilla Bean", "Studio Arhoj - Sabu Rigoletto", "Studio Arhoj - Yoshi Sunbeam",
-    "Mooncakes and Milk Bread Cookbook", "Every Grain of Rice Cookbook", "Nordic Ware 8x8\" baking pan",
-    "Fat Daddio's 6.5\" tart pan", "Petzl Grigri - orange", "Kimwipes",
-    "Foam Tip Cleaners for Sunil's projects", "Engineer Curved Tip Tweezers for Sunil's projects",
-    "Engineer Tweezers for Sunil's projects", "ESP32 microcontrollers for Sunil's projects",
-  ];
-
+  // `key` is the gift's exact name in the Sheet's Gift column and links the card to its
+  // row. tools/sync-registry.mjs rewrites the block below from the Sheet: it owns `key`
+  // and `price`, appends rows added to the Sheet, and drops rows removed from it. Name,
+  // vendor, qty, cat, img and buy are written by hand and the sync never overwrites them.
+  // --- gift list: generated from the Sheet ---
   const ITEMS = [
-    { name: "Placemats — Charcoal", vendor: "Graf Lanz", price: "$45", qty: "each", cat: "Table & Linens", img: "registry-assets/gift-01.webp", buy: "https://graflantz.com/collections/placemats/products/felt-placemat-charcoal?variant=39663534637165" },
-    { name: "Placemats — Granite", vendor: "Graf Lanz", price: "$45", qty: "each", cat: "Table & Linens", img: "registry-assets/gift-02.webp", buy: "https://graflantz.com/collections/placemats/products/felt-placemat-granite?variant=39665704403053" },
-    { name: "Napkins — Terracotta", vendor: "Quince", price: "$70", qty: "set of 12", cat: "Table & Linens", img: "registry-assets/gift-03.webp", buy: "https://www.quince.com/home/organic-airy-gauze-napkins-set-of-12?color=terracotta&size=one-size" },
+    { key: "Graf Lantz placemats - charcoal", name: "Placemats — Charcoal", vendor: "Graf Lantz", price: "$42", qty: "each · 2 requested", cat: "Table & Linens", img: "registry-assets/gift-01.webp", buy: "https://graflantz.com/collections/placemats/products/felt-placemat-charcoal?variant=39663534637165" },
+    { key: "Graf Lantz placemats - granite", name: "Placemats — Granite", vendor: "Graf Lantz", price: "$42", qty: "each · 2 requested", cat: "Table & Linens", img: "registry-assets/gift-02.webp", buy: "https://graflantz.com/collections/placemats/products/felt-placemat-granite?variant=39665704403053" },
+    { key: "Graf Lantz placemats - mahogany", name: "Placemats — Mahogany", vendor: "Graf Lantz", price: "$45", qty: "each · 2 requested", cat: "Table & Linens", img: "registry-assets/gift-35.webp", buy: "https://graflantz.com/products/rectangle-placemat-felt-mahogany?variant=39663545188461" },
+    { key: "Graf Lantz placemats - marine", name: "Placemats — Marine", vendor: "Graf Lantz", price: "$42", qty: "each · 2 requested", cat: "Table & Linens", img: "registry-assets/gift-36.webp", buy: "https://graflantz.com/collections/placemats/products/felt-placemat-marine?variant=39665704468589" },
+    { key: "Quince napkins - terracota x12", name: "Napkins — Terracotta", vendor: "Quince", price: "$70", qty: "set of 12", cat: "Table & Linens", img: "registry-assets/gift-03.webp", buy: "https://www.quince.com/home/organic-airy-gauze-napkins-set-of-12?color=terracotta&size=one-size" },
 
-    { name: "Nashi", vendor: "Studio Arhoj", price: "$55", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-04.webp", buy: "https://arhoj.com/collections/figurines/products/crystal-blob-pear-nashi" },
-    { name: "Pacha", vendor: "Studio Arhoj", price: "$55", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-05.webp", buy: "https://arhoj.com/collections/figurines/products/crystal-blob-pacha" },
-    { name: "Crystal Blob Group 1120", vendor: "Studio Arhoj", price: "$110", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-06.webp", buy: "https://arhoj.com/collections/figurines/products/crystal-blob-group-1120" },
-    { name: "’Lil Richard", vendor: "Studio Arhoj", price: "$55", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-07.webp", buy: "https://arhoj.com/collections/figurines/products/crystal-blob-eggplant" },
-    { name: "Yoshi Snow Leaf", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-08.webp", buy: "https://arhoj.com/collections/figurines/products/familia-yoshi-snow-leaf" },
-    { name: "Osu Saint Jacques", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-09.webp", buy: "https://arhoj.com/collections/figurines/products/familia-25" },
-    { name: "Yoko Aqualung", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-10.webp", buy: "https://arhoj.com/collections/familia/products/familia-yoko-aqualung" },
-    { name: "Bobo Matte Aquamarine", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-11.webp", buy: "https://arhoj.com/collections/familia/products/familia-3" },
-    { name: "Buto Touch of Heaven", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-12.webp", buy: "https://arhoj.com/collections/figurines/products/familia-buto-touch-of-heaven" },
-    { name: "Kayo Astro Zinger", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-13.webp", buy: "https://arhoj.com/collections/figurines/products/familia-astro-zinger" },
-    { name: "Sponged Pourpour", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-14.webp", buy: "https://arhoj.com/collections/figurines/products/familia-fuji-sponged-pourpour" },
-    { name: "Fuji Rosy Cheeks", vendor: "Studio Arhoj", price: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-15.webp", buy: "https://arhoj.com/collections/familia/products/familia-fuji-rosy-cheeks" },
-    { name: "Bobo Cream Cerise", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-16.webp", buy: "https://arhoj.com/collections/figurines/products/familia-bobo-cream-cerise" },
-    { name: "Osu Mashed Strawberries", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-17.webp", buy: "https://arhoj.com/collections/familia/products/familia-fuji-mashed-strawberries" },
-    { name: "Niji Dolphin", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-18.webp", buy: "https://arhoj.com/collections/familia/products/familia-niji-dolphin" },
-    { name: "Dot Blue Sea", vendor: "Studio Arhoj", price: "$36", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-19.webp", buy: "https://arhoj.com/collections/familia/products/familia-dot-light-blue" },
-    { name: "Niagara Falls", vendor: "Studio Arhoj", price: "$36", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-20.webp", buy: "https://arhoj.com/collections/figurines/products/familia-dot-niagara-falls" },
-    { name: "Dot Classic White", vendor: "Studio Arhoj", price: "$36", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-21.webp", buy: "https://arhoj.com/collections/familia/products/familia-dot-white" },
-    { name: "Dot Vanilla Bean", vendor: "Studio Arhoj", price: "$36", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-22.webp", buy: "https://arhoj.com/collections/familia/products/familia-1" },
-    { name: "Sabu Rigoletto", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-23.webp", buy: "https://arhoj.com/collections/familia/products/familia-15" },
-    { name: "Yoshi Sunbeam", vendor: "Studio Arhoj", price: "$41", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-24.webp", buy: "https://arhoj.com/collections/familia/products/familia-11" },
+    { key: "Studio Arhoj - Nashi", name: "Nashi", vendor: "Studio Arhoj", price: "$55", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-04.webp", buy: "https://arhoj.com/collections/figurines/products/crystal-blob-pear-nashi" },
+    { key: "Studio Arhoj - Pacha", name: "Pacha", vendor: "Studio Arhoj", price: "$55", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-05.webp", buy: "https://arhoj.com/collections/figurines/products/crystal-blob-pacha" },
+    { key: "Studio Arhoj - Crystal Blob Group 1120", name: "Crystal Blob Group 1120", vendor: "Studio Arhoj", price: "$110", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-06.webp", buy: "https://arhoj.com/collections/figurines/products/crystal-blob-group-1120" },
+    { key: "Studio Arhoj - 'Lil Richard", name: "’Lil Richard", vendor: "Studio Arhoj", price: "$55", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-07.webp", buy: "https://arhoj.com/collections/figurines/products/crystal-blob-eggplant" },
+    { key: "Studio Arhoj - Yoshi Snow Leaf", name: "Yoshi Snow Leaf", vendor: "Studio Arhoj", price: "$41", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-08.webp", buy: "https://arhoj.com/collections/figurines/products/familia-yoshi-snow-leaf" },
+    { key: "Studio Arhoj - Osu Saint Jacques", name: "Osu Saint Jacques", vendor: "Studio Arhoj", price: "$41", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-09.webp", buy: "https://arhoj.com/collections/figurines/products/familia-25" },
+    { key: "Studio Arhoj - Yoko Aqualung", name: "Yoko Aqualung", vendor: "Studio Arhoj", price: "$41", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-10.webp", buy: "https://arhoj.com/collections/familia/products/familia-yoko-aqualung" },
+    { key: "Studio Arhoj - Bobo Matte Aquamarine", name: "Bobo Matte Aquamarine", vendor: "Studio Arhoj", price: "$41", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-11.webp", buy: "https://arhoj.com/collections/familia/products/familia-3" },
+    { key: "Studio Arhoj - Buto Touch of Heaven", name: "Buto Touch of Heaven", vendor: "Studio Arhoj", price: "$41", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-12.webp", buy: "https://arhoj.com/collections/figurines/products/familia-buto-touch-of-heaven" },
+    { key: "Studio Arhoj - Kayo Astro Zinger", name: "Kayo Astro Zinger", vendor: "Studio Arhoj", price: "$41", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-13.webp", buy: "https://arhoj.com/collections/figurines/products/familia-astro-zinger" },
+    { key: "Studio Arhoj - Sponged Pourpour", name: "Sponged Pourpour", vendor: "Studio Arhoj", price: "$41", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-14.webp", buy: "https://arhoj.com/collections/figurines/products/familia-fuji-sponged-pourpour" },
+    { key: "Studio Arhoj - Fuji Rosy Cheeks", name: "Fuji Rosy Cheeks", vendor: "Studio Arhoj", price: "$42", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-15.webp", buy: "https://arhoj.com/collections/familia/products/familia-fuji-rosy-cheeks" },
+    { key: "Studio Arhoj - Bobo Cream Cerise", name: "Bobo Cream Cerise", vendor: "Studio Arhoj", price: "$41", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-16.webp", buy: "https://arhoj.com/collections/figurines/products/familia-bobo-cream-cerise" },
+    { key: "Studio Arhoj - Osu Mashed Strawberries", name: "Osu Mashed Strawberries", vendor: "Studio Arhoj", price: "$41", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-17.webp", buy: "https://arhoj.com/collections/familia/products/familia-fuji-mashed-strawberries" },
+    { key: "Studio Arhoj - Niji Dolphin", name: "Niji Dolphin", vendor: "Studio Arhoj", price: "$41", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-18.webp", buy: "https://arhoj.com/collections/familia/products/familia-niji-dolphin" },
+    { key: "Studio Arhoj - Dot Blue Sea", name: "Dot Blue Sea", vendor: "Studio Arhoj", price: "$36", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-19.webp", buy: "https://arhoj.com/collections/familia/products/familia-dot-light-blue" },
+    { key: "Studio Arhoj - Niagara Falls", name: "Niagara Falls", vendor: "Studio Arhoj", price: "$36", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-20.webp", buy: "https://arhoj.com/collections/figurines/products/familia-dot-niagara-falls" },
+    { key: "Studio Arhoj - Dot Classic White", name: "Dot Classic White", vendor: "Studio Arhoj", price: "$36", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-21.webp", buy: "https://arhoj.com/collections/familia/products/familia-dot-white" },
+    { key: "Studio Arhoj - Dot Vanilla Bean", name: "Dot Vanilla Bean", vendor: "Studio Arhoj", price: "$36", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-22.webp", buy: "https://arhoj.com/collections/familia/products/familia-1" },
+    { key: "Studio Arhoj - Sabu Rigoletto", name: "Sabu Rigoletto", vendor: "Studio Arhoj", price: "$41", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-23.webp", buy: "https://arhoj.com/collections/familia/products/familia-15" },
+    { key: "Studio Arhoj - Yoshi Sunbeam", name: "Yoshi Sunbeam", vendor: "Studio Arhoj", price: "$41", qty: "", cat: "Studio Arhoj Ceramics", img: "registry-assets/gift-24.webp", buy: "https://arhoj.com/collections/familia/products/familia-11" },
 
-    { name: "Mooncakes and Milk Bread", vendor: "Cookbook", price: "$20", cat: "The Kitchen", img: "registry-assets/gift-25.webp", buy: "https://www.amazon.com/wedding/guest-view/AJZWNWORQSGQ" },
-    { name: "Every Grain of Rice", vendor: "Cookbook", price: "$20", cat: "The Kitchen", img: "registry-assets/gift-26.webp", buy: "https://www.amazon.com/wedding/guest-view/AJZWNWORQSGQ" },
-    { name: "8×8″ Baking Pan", vendor: "Nordic Ware", price: "$16", qty: "per pan", cat: "The Kitchen", img: "registry-assets/gift-27.webp", buy: "" },
-    { name: "6.5″ Tart Pan", vendor: "Fat Daddio’s", price: "$12", qty: "per pan", cat: "The Kitchen", img: "registry-assets/gift-28.webp", buy: "" },
+    { key: "DeLonghi 3oz glasses", name: "Espresso Glasses — 3 oz", vendor: "De’Longhi", price: "$16", qty: "set of 2", cat: "The Kitchen", img: "registry-assets/gift-37.webp", buy: "https://www.delonghi.com/en-us/p/coffee-cups-and-glasses-de-longhi-espresso-cups--double-wall-thermal-glasses--2-oz--set-of-2---dlsc310/DLSC310.html" },
+    { key: "DeLonghi 11oz glasses", name: "Latte Glasses — 11 oz", vendor: "De’Longhi", price: "$30", qty: "set of 2", cat: "The Kitchen", img: "registry-assets/gift-38.webp", buy: "https://www.delonghi.com/en-us/p/coffee-cups-and-glasses-latte-macchiato-cups--double-wall-thermal-glasses--7.5-oz--set-of-2/DLSC312.html" },
+    { key: "Mooncakes and Milk Bread Cookbook", name: "Mooncakes and Milk Bread", vendor: "Cookbook", price: "$20", qty: "", cat: "The Kitchen", img: "registry-assets/gift-25.webp", buy: "https://www.amazon.com/wedding/guest-view/AJZWNWORQSGQ" },
+    { key: "Every Grain of Rice Cookbook", name: "Every Grain of Rice", vendor: "Cookbook", price: "$20", qty: "", cat: "The Kitchen", img: "registry-assets/gift-26.webp", buy: "https://www.amazon.com/wedding/guest-view/AJZWNWORQSGQ" },
+    { key: "Nordic Ware 8x8\" baking pan", name: "8×8″ Baking Pan", vendor: "Nordic Ware", price: "$16", qty: "per pan", cat: "The Kitchen", img: "registry-assets/gift-27.webp", buy: "" },
+    { key: "Fat Daddio's 6.5\" tart pan", name: "6.5″ Tart Pan", vendor: "Fat Daddio’s", price: "$12", qty: "per pan", cat: "The Kitchen", img: "registry-assets/gift-28.webp", buy: "" },
+    { key: "Steamed Pudding Mold", name: "Steamed Pudding Mold", vendor: "Mrs. Anderson’s Baking", price: "$28", qty: "1.6 L", cat: "The Kitchen", img: "registry-assets/gift-39.webp", buy: "https://www.amazon.com/Mrs-Andersons-Baking-43715-1-6-Liters/dp/B009J9BF3O/" },
 
-    { name: "Grigri — Orange", vendor: "Petzl", price: "$133", cat: "The Outdoors", img: "registry-assets/gift-29.webp", buy: "" },
+    { key: "Petzl Grigri - orange", name: "Grigri — Orange", vendor: "Petzl", price: "$133", qty: "", cat: "The Outdoors", img: "registry-assets/gift-29.webp", buy: "" },
+    { key: "Magdust Climbing Chalk", name: "Magdust Climbing Chalk", vendor: "Rungne", price: "$24", qty: "200 g bag", cat: "The Outdoors", img: "registry-assets/gift-40.webp", buy: "https://rungne.com/products/magdust-chalk?variant=52627752223084" },
 
-    { name: "Kimwipes", vendor: "Workshop", price: "$16", qty: "per box", cat: "For Sunil’s Projects", img: "registry-assets/gift-30.webp", buy: "" },
-    { name: "Foam Tip Cleaners", vendor: "Workshop", price: "$14", cat: "For Sunil’s Projects", img: "registry-assets/gift-31.webp", buy: "" },
-    { name: "Curved Tip Tweezers", vendor: "Workshop", price: "$42", cat: "For Sunil’s Projects", img: "registry-assets/gift-32.webp", buy: "" },
-    { name: "Precision Tweezers", vendor: "Workshop", price: "$59", cat: "For Sunil’s Projects", img: "registry-assets/gift-33.webp", buy: "" },
-    { name: "ESP32 Microcontrollers", vendor: "Workshop", price: "$23", cat: "For Sunil’s Projects", img: "registry-assets/gift-34.webp", buy: "" },
+    { key: "Kimwipes for Sunil's projects", name: "Kimwipes", vendor: "Workshop", price: "$16", qty: "per box", cat: "For Sunil’s Projects", img: "registry-assets/gift-30.webp", buy: "" },
+    { key: "Foam Tip Cleaners for Sunil's projects", name: "Foam Tip Cleaners", vendor: "Workshop", price: "$14", qty: "", cat: "For Sunil’s Projects", img: "registry-assets/gift-31.webp", buy: "" },
+    { key: "Engineer Curved Tip Tweezers for Sunil's projects", name: "Curved Tip Tweezers", vendor: "Workshop", price: "$42", qty: "", cat: "For Sunil’s Projects", img: "registry-assets/gift-32.webp", buy: "" },
+    { key: "Engineer Tweezers for Sunil's projects", name: "Precision Tweezers", vendor: "Workshop", price: "$59", qty: "", cat: "For Sunil’s Projects", img: "registry-assets/gift-33.webp", buy: "" },
+    { key: "ESP32 microcontrollers for Sunil's projects", name: "ESP32 Microcontrollers", vendor: "Workshop", price: "$23", qty: "", cat: "For Sunil’s Projects", img: "registry-assets/gift-34.webp", buy: "" },
   ];
+  // --- end gift list ---
 
   const CATEGORY_ORDER = [
     "Table & Linens", "Studio Arhoj Ceramics", "The Kitchen", "The Outdoors", "For Sunil’s Projects",
@@ -279,8 +276,6 @@
   // ============================================================
   //  WIRING
   // ============================================================
-  ITEMS.forEach((it, i) => { it.key = SHEET_NAMES[i] || it.name; });
-
   const liveEnabled = () => /^https:\/\//.test(WEBAPP_URL);
   const escAttr = s => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
   const escHtml = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -288,12 +283,22 @@
   const overlay = document.getElementById("overlay");
   const CLAIMED_RE = /claim|purchas|taken|bought|reserved/i;
 
+  // A gift bought through the Amazon registry ships to the address Amazon already holds.
+  // Every other gift the guest sends themselves, so the thank-you mail has to carry our
+  // address and the claim has to collect somewhere to send it. apps-script/Code.gs applies
+  // this same test server-side when it decides what goes in the mail; keep the two in step.
+  const AMAZON_REGISTRY_RE = /amazon\.[a-z.]+\/wedding\//i;
+  const needsShipping = it => !AMAZON_REGISTRY_RE.test(it.buy || "");
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   function buildCard(it) {
     const claimed = it.status === "claimed";
     const href = it.buy ? `href="${escAttr(it.buy)}" target="_blank" rel="noopener"` : "";
+    // A gift added to the Sheet has no photo until one is committed; show the empty tile.
+    const img = it.img ? `<img src="${escAttr(it.img)}" alt="${escAttr(it.name)}" loading="lazy">` : "";
     const photo = it.buy
-      ? `<a class="photo" ${href}><img src="${escAttr(it.img)}" alt="${escAttr(it.name)}" loading="lazy"></a>`
-      : `<div class="photo"><img src="${escAttr(it.img)}" alt="${escAttr(it.name)}" loading="lazy"></div>`;
+      ? `<a class="photo" ${href}>${img}</a>`
+      : `<div class="photo">${img}</div>`;
     const title = it.buy
       ? `<a class="name" ${href}>${escHtml(it.name)}</a>`
       : `<span class="name">${escHtml(it.name)}</span>`;
@@ -305,7 +310,8 @@
     const claimEl = claimed ? "" : (liveEnabled()
       ? `<button type="button" class="claim" data-key="${escAttr(it.key)}">I’ll get this →</button>`
       : `<a class="claim" data-key="${escAttr(it.key)}" href="mailto:${CLAIM_EMAIL}?subject=${encodeURIComponent("Registry — " + it.name)}">I’ll get this →</a>`);
-    return `${photo}<div class="body">${title}<span class="vendor">${escHtml(it.vendor)}</span>` +
+    const vendor = it.vendor ? `<span class="vendor">${escHtml(it.vendor)}</span>` : "";
+    return `${photo}<div class="body">${title}${vendor}` +
            `<div class="spacer"></div><div class="pricerow">${priceBlock}${view}</div>` +
            `<div class="card-foot"><span class="badge">${claimed ? "Claimed" : "Available"}</span>${claimEl}</div></div>`;
   }
@@ -314,7 +320,11 @@
     catalog.innerHTML = "";
     const groups = {};
     ITEMS.forEach(it => (groups[it.cat] ||= []).push(it));
-    CATEGORY_ORDER.filter(c => groups[c]).forEach(cat => {
+    // A gift the sync added from the Sheet carries a category that is not in the order
+    // above; show those last rather than dropping them off the page.
+    const cats = CATEGORY_ORDER.filter(c => groups[c])
+      .concat(Object.keys(groups).filter(c => !CATEGORY_ORDER.includes(c)));
+    cats.forEach(cat => {
       const sub = CATEGORY_SUBTITLES[cat];
       const section = document.createElement("section");
       section.className = "category";
@@ -368,42 +378,75 @@
   // ---- Claim modal ----
   function openClaim(it) {
     if (it.status === "claimed") { toast("That one’s already claimed 🤍"); return; }
+    const ship = needsShipping(it);
+    const emailHint = ship
+      ? "— required, so we can send you our address"
+      : "— optional, so we can say thank you";
     overlay.innerHTML =
       `<div class="modal">
          <h3>Claim this gift</h3>
          <p class="mg-name">${escHtml(it.name)}</p>
          <label for="who">Your name <span style="opacity:.65">— so we know who to thank (optional)</span></label>
          <input id="who" type="text" maxlength="60" placeholder="e.g. Aunt Sue" autocomplete="name">
+         <label for="guestEmail">Your email <span style="opacity:.65">${emailHint}</span></label>
+         <input id="guestEmail" type="email" maxlength="120" placeholder="you@example.com" autocomplete="email">
+         <p class="mg-error" id="mErr" hidden></p>
          <div class="actions">
            <button class="cancel" id="mCancel">Cancel</button>
            <button class="confirm" id="mOk">Claim it</button>
          </div>
-         <p class="note">This marks it off Gretl &amp; Sunil’s list so it won’t be gifted twice.</p>
+         <p class="note">This marks it off Gretl &amp; Sunil’s list so it won’t be gifted twice.${
+           ship ? " This one comes to us directly, so we’ll email you our address." : ""}</p>
        </div>`;
     overlay.classList.add("open");
-    const input = overlay.querySelector("#who");
-    setTimeout(() => input.focus(), 50);
+    const who = overlay.querySelector("#who");
+    const email = overlay.querySelector("#guestEmail");
+    const err = overlay.querySelector("#mErr");
+    setTimeout(() => who.focus(), 50);
+
+    function attempt() {
+      const address = email.value.trim();
+      if (ship && !address) return fail("We need an email address to send you our address.");
+      if (address && !EMAIL_RE.test(address)) return fail("That email address does not look right.");
+      submitClaim(it, who.value.trim(), address);
+    }
+    function fail(msg) { err.textContent = msg; err.hidden = false; email.focus(); }
+
     overlay.querySelector("#mCancel").onclick = closeModal;
-    overlay.querySelector("#mOk").onclick = () => submitClaim(it, input.value.trim());
-    input.onkeydown = e => {
-      if (e.key === "Enter") submitClaim(it, input.value.trim());
-      if (e.key === "Escape") closeModal();
-    };
+    overlay.querySelector("#mOk").onclick = attempt;
+    [who, email].forEach(input => {
+      input.onkeydown = e => {
+        if (e.key === "Enter") attempt();
+        if (e.key === "Escape") closeModal();
+      };
+    });
     overlay.onclick = e => { if (e.target === overlay) closeModal(); };
   }
   function closeModal() { overlay.classList.remove("open"); overlay.innerHTML = ""; overlay.onclick = null; }
 
-  async function submitClaim(it, who) {
+  async function submitClaim(it, who, email) {
+    const wasStatus = it.status;
     it.status = "claimed";          // optimistic
     render();
     closeModal();
     toast(`You claimed “${it.name}” 🤍 Thank you!`);
     if (!liveEnabled()) return;
     try {
-      const r = await fetch(WEBAPP_URL, { method: "POST", body: JSON.stringify({ action: "claim", name: it.key, who: who || "" }) });
+      const r = await fetch(WEBAPP_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "claim", name: it.key, who: who || "", email: email || "", buy: it.buy || "" }),
+      });
       const res = await r.json();
-      if (res && res.ok === false && res.error === "already") toast(`Oh — someone just claimed “${it.name}” first.`);
       if (res && res.status) { applyStatusMap(res.status); render(); }
+      if (res && res.ok === false) {
+        if (res.error === "already") {
+          toast(`Oh — someone just claimed “${it.name}” first.`, 6000);
+        } else {
+          // The Sheet did not record it. Put the card back so nobody thinks it is taken.
+          if (!res.status) { it.status = wasStatus; render(); }
+          toast(`We could not record “${it.name}”. Please email ${CLAIM_EMAIL} and we’ll sort it out.`, 9000);
+        }
+      }
     } catch (_) {
       setTimeout(refreshStatus, 1500);   // reconcile against the Sheet's truth
     }
@@ -411,12 +454,12 @@
 
   // ---- Toast ----
   let toastTimer;
-  function toast(msg) {
+  function toast(msg, ms) {
     const t = document.getElementById("toast");
     t.textContent = msg;
     t.classList.add("show");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove("show"), 3800);
+    toastTimer = setTimeout(() => t.classList.remove("show"), ms || 3800);
   }
 
   // ---- Init ----

@@ -1,0 +1,49 @@
+name: Sync registry from the Sheet
+
+# Reads the registry Google Sheet through the deployed Apps Script web app and commits
+# any change to the gift list in index.html. GitHub Pages republishes from the branch.
+# A gift added to the Sheet lands with no photo, no shop link and the placeholder
+# category; the commit message and the run summary say which rows need that filled in.
+
+on:
+  schedule:
+    - cron: "17 13 * * *"   # daily, 13:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-registry
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Read the Sheet and update index.html
+        run: node tools/sync-registry.mjs | tee sync-report.txt
+
+      - name: Commit any change
+        run: |
+          cat sync-report.txt >> "$GITHUB_STEP_SUMMARY"
+          if git diff --quiet -- index.html; then
+            echo "index.html already matches the Sheet."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          {
+            echo "Sync gift list from the registry Sheet"
+            echo
+            cat sync-report.txt
+          } > commit-message.txt
+          git add index.html
+          git commit --file commit-message.txt
+          git push
